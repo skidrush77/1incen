@@ -1,210 +1,369 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
 .sec{width:100%;padding:3.5rem 2rem}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 .eyebrow{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem}
-.hero-title{font-size:clamp(38px,8vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.02em;font-family:var(--font-sans)}
-.sub{font-size:15px;line-height:1.7;max-width:480px;margin-top:1rem}
-.section-title{font-size:clamp(28px,5vw,48px);font-weight:700;line-height:1.05;letter-spacing:-0.02em;margin-bottom:1rem}
-.body{font-size:14px;line-height:1.7}
-.kv{display:flex;justify-content:space-between;align-items:baseline;border-top:0.5px solid;padding:10px 0;font-size:14px}
-.num-lg{font-size:clamp(32px,6vw,56px);font-weight:700;letter-spacing:-0.02em;line-height:1}
-.tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;border:0.5px solid;border-radius:100px;padding:4px 12px;margin-bottom:1.5rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:2rem}
-.cell{padding:1.5rem 1rem}
-.step-row{display:flex;gap:1rem;align-items:flex-start;padding:1rem 0;border-bottom:0.5px solid}
+.hero-title{font-size:clamp(42px,9vw,80px);font-weight:800;line-height:0.95;letter-spacing:-0.03em}
+.section-title{font-size:clamp(26px,5vw,46px);font-weight:800;line-height:1.05;letter-spacing:-0.025em;margin-bottom:1rem}
+.step-row{display:flex;gap:1rem;align-items:flex-start;padding:1.2rem 0;border-bottom:0.5px solid;cursor:pointer;transition:all 0.2s}
 .step-row:last-child{border-bottom:none}
-.step-n{font-size:11px;font-weight:500;letter-spacing:0.1em;min-width:24px;padding-top:3px}
-.divider-line{height:0.5px;margin:2rem 0}
+.step-detail{max-height:0;overflow:hidden;transition:max-height 0.45s ease,opacity 0.35s ease;opacity:0;font-size:13px;line-height:1.7;margin-top:0}
+.step-detail.open{max-height:140px;opacity:1;margin-top:8px}
+.pill{display:inline-block;font-size:11px;border:0.5px solid;border-radius:100px;padding:4px 12px}
+.num-lg{font-size:clamp(30px,6vw,54px);font-weight:800;letter-spacing:-0.025em;line-height:1}
+.bar-track{height:6px;border-radius:3px;background:rgba(255,255,255,0.1);margin-top:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;background:#f0ede6;width:0;transition:width 1s ease}
+.bar-fill.go{width:var(--w)}
+.payout-row{display:grid;grid-template-columns:80px 1fr 1fr 1fr;padding:11px 0;border-bottom:0.5px solid;cursor:pointer;transition:background 0.15s;border-radius:4px}
+.payout-row:hover{background:rgba(0,0,0,0.04)}
+.payout-row.active{background:rgba(239,159,39,0.15)}
+.payout-row:last-child{border-bottom:none}
+.scenario-detail{max-height:0;overflow:hidden;transition:max-height 0.35s ease,opacity 0.25s;opacity:0;font-size:12px;grid-column:1/-1;padding:0 4px}
+.scenario-detail.open{max-height:60px;opacity:1;padding:6px 4px 4px}
+.sim-slider-wrap{margin:1.2rem 0 0.5rem}
+.sim-slider-wrap label{font-size:12px;color:#993C1D;display:flex;justify-content:space-between;margin-bottom:6px}
+input[type=range].sim{width:100%;accent-color:#D85A30}
+.sim-result{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#F0997B;border-radius:8px;overflow:hidden;margin-top:1.5rem}
+.sim-cell{background:#FAECE7;padding:1.25rem 1rem;text-align:center}
+
+.phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#9FE1CB}
+.phase-col{padding:2rem;transition:background 0.4s}
+.phase-col.p1{background:#E1F5EE}
+.phase-col.p2{background:#085041}
+.phase-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem}
+.phase-num{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-0.025em;line-height:1;margin-bottom:0.5rem}
+.phase-body{font-size:13px;line-height:1.7}
+.phase-detail-block{max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.4s ease;opacity:0}
+.phase-detail-block.open{max-height:300px;opacity:1}
+.phase-card{border-radius:8px;padding:0.875rem;margin-top:1rem;font-size:13px;line-height:1.6}
 </style>
 
-<div class="sec" style="background:#0e0e0e; color:#f0ede6">
-  <div class="eyebrow" style="color:#888">신작 제작 부서 인센티브 정책</div>
+<div class="sec" style="background:#0e0e0e;color:#f0ede6">
+  <div class="eyebrow" style="color:#555">신작 제작 부서 인센티브 정책</div>
   <div class="hero-title">1%<br>Incentive<br>Plan</div>
-  <p class="sub" style="color:#aaa">매출의 1%를 영업이익 고려없이 지급</p>
-  <div style="margin-top:2.5rem;display:flex;gap:12px;flex-wrap:wrap">
-    <span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:100px;padding:5px 14px">고위험·고수익 기반</span>
-    <span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:100px;padding:5px 14px">무제한 보상</span>
-    <span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:100px;padding:5px 14px">신작게임 프로젝트 대상</span>
+  <p style="font-size:15px;color:#777;margin-top:1rem;max-width:420px;line-height:1.7">매출의 1%를 영업이익 고려없이 지급 — 성공할수록 보상도 무제한</p>
+  <div style="margin-top:2rem;display:flex;gap:8px;flex-wrap:wrap">
+    <span class="pill" style="color:#555;border-color:#333">고위험·고수익</span>
+    <span class="pill" style="color:#555;border-color:#333">무제한 보상</span>
+    <span class="pill" style="color:#555;border-color:#333">신작게임 프로젝트 대상</span>
   </div>
 </div>
 
-
-<div class="sec" style="background:#EEEDFE; color:#26215C">
-  <div class="eyebrow" style="color:#7F77DD;border-color:#AFA9EC">신규 체계</div>
-  <div class="section-title" style="color:#26215C">1% 인센티브의 3대 핵심 내용</div>
-  <div style="margin-top:2rem;display:flex;flex-direction:column;gap:0">
-    <div class="step-row" style="border-color:#AFA9EC">
-      <div class="step-n" style="color:#7F77DD">01</div>
-      <div>
-        <div style="font-size:16px;font-weight:600;color:#26215C;margin-bottom:4px">High Risk / High Return</div>
-        <div class="body" style="color:#534AB7">성공 크기에 비례하는 상한선 없는 무제한 보상</div>
+<div class="sec reveal" style="background:#EEEDFE;color:#26215C">
+  <div class="eyebrow" style="color:#7F77DD">핵심 철학</div>
+  <div class="section-title" style="color:#26215C">3대 핵심 내용</div>
+  <div style="margin-top:1.5rem">
+    <div class="step-row" style="border-color:#AFA9EC" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#7F77DD">01</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:#26215C">High Risk / High Return</div>
+        <div class="step-detail" style="color:#534AB7">성공 크기에 비례하는 상한선 없는 무제한 보상. 매출이 클수록 팀이 가져가는 인센티브도 선형으로 증가합니다.</div>
       </div>
+      <div style="font-size:18px;color:#AFA9EC;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
-    <div class="step-row" style="border-color:#AFA9EC">
-      <div class="step-n" style="color:#7F77DD">02</div>
-      <div>
-        <div style="font-size:16px;font-weight:600;color:#26215C;margin-bottom:4px">Scale-up Focus</div>
-        <div class="body" style="color:#534AB7">초기 12~18개월간 공격적인 유저 모객(UA) 장려 목적</div>
+    <div class="step-row" style="border-color:#AFA9EC" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#7F77DD">02</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:#26215C">Scale-up Focus</div>
+        <div class="step-detail" style="color:#534AB7">초기 12개월간 ROAS·이익률 무관. 공격적인 유저 모객(UA)에만 집중할 수 있도록 단기 수익성 압박을 완전히 제거한 구조입니다.</div>
       </div>
+      <div style="font-size:18px;color:#AFA9EC;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
-    <div class="step-row" style="border-color:#AFA9EC">
-      <div class="step-n" style="color:#7F77DD">03</div>
-      <div>
-        <div style="font-size:16px;font-weight:600;color:#26215C;margin-bottom:4px">Long-term Retention</div>
-        <div class="body" style="color:#534AB7">회사의 리스크를 줄이는 분할 지급 구조</div>
+    <div class="step-row" style="border-color:transparent" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#7F77DD">03</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;color:#26215C">Long-term Retention</div>
+        <div class="step-detail" style="color:#534AB7">회사의 리스크를 줄이는 분할 지급 구조. 핵심 개발진이 장기적으로 프로젝트에 남아있을 인센티브를 제공합니다.</div>
       </div>
+      <div style="font-size:18px;color:#AFA9EC;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
   </div>
 </div>
 
-<div class="sec" style="background:#0e0e0e; color:#f0ede6">
-  <div class="eyebrow" style="color:#888">발동 조건</div>
-  <div class="section-title" style="color:#f0ede6">매출 10억이 넘으면 1%인센 발동</div>
-  <div style="margin-top:2rem;padding:2rem;background:#1a1a1a;border-radius:12px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+<div class="sec reveal" style="background:#0e0e0e;color:#f0ede6">
+  <div class="eyebrow" style="color:#555">발동 조건</div>
+  <div class="section-title" style="color:#f0ede6">월 매출 10억 넘으면 발동</div>
+  <div style="margin-top:1.5rem;padding:2rem;background:#141414;border-radius:12px;border:0.5px solid #222">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
       <div>
-        <div class="num-lg" style="color:#f0ede6">10억 원</div>
-        <div style="font-size:13px;color:#666;margin-top:6px">월 매출 Threshold</div>
+        <div class="num-lg" style="color:#f0ede6">10억</div>
+        <div class="bar-track"><div class="bar-fill" style="--w:60%" data-bar></div></div>
+        <div style="font-size:12px;color:#444;margin-top:8px">월 매출 기준</div>
       </div>
-      <div style="text-align:right">
+      <div>
         <div class="num-lg" style="color:#f0ede6">1%</div>
-        <div style="font-size:13px;color:#666;margin-top:6px">총매출 기준 누적율</div>
+        <div class="bar-track"><div class="bar-fill" style="--w:100%" data-bar></div></div>
+        <div style="font-size:12px;color:#444;margin-top:8px">총매출 누적율</div>
       </div>
-      <div style="text-align:right">
+      <div>
         <div class="num-lg" style="color:#f0ede6">12개월</div>
-        <div style="font-size:13px;color:#666;margin-top:6px">누적 기간 (ROAS 무관)</div>
+        <div class="bar-track"><div class="bar-fill" style="--w:80%" data-bar></div></div>
+        <div style="font-size:12px;color:#444;margin-top:8px">누적 기간</div>
       </div>
     </div>
-    <div style="height:0.5px;background:#333;margin:1.5rem 0"></div>
+    <div style="height:0.5px;background:#222;margin:1.5rem 0"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:4px;padding:4px 10px">ROAS 무관</span>
-      <span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:4px;padding:4px 10px">이익률 무관</span>
-<span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:4px;padding:4px 10px">12개월이 지나자마자 바로 지급</span>
-<span style="font-size:12px;color:#666;border:0.5px solid #333;border-radius:4px;padding:4px 10px">N분의1은 아님, 기여도별 차등 지급</span>
+      <span class="pill" style="color:#444;border-color:#2a2a2a">ROAS 무관</span>
+      <span class="pill" style="color:#444;border-color:#2a2a2a">이익률 무관</span>
+      <span class="pill" style="color:#444;border-color:#2a2a2a">12개월 후 즉시 지급</span>
+      <span class="pill" style="color:#444;border-color:#2a2a2a">기여도별 차등 지급</span>
     </div>
   </div>
 </div>
 
 <div style="background:#E1F5EE">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5px;background:#9FE1CB">
-    <div class="cell" style="background:#E1F5EE;padding:2rem">
-      <div class="eyebrow" style="color:#1D9E75;border-color:#5DCAA5">Phase 1 · Month 1–12</div>
-      <div style="font-size:22px;font-weight:700;color:#04342C;margin-bottom:8px">스케일업 기간</div>
-      <div class="body" style="color:#0F6E56;margin-bottom:1rem">총매출(Gross Revenue)의 1%가 인센티브 예산</div>
-      <div style="font-size:13px;color:#0F6E56;line-height:1.8">
-        공격적 유저 모객·파이 키우기<br>
-        BI 상의 총매출 기준으로 계산
+  <div class="sec reveal" style="padding-bottom:1rem">
+    <div class="eyebrow" style="color:#1D9E75">2단계 구조</div>
+    <div class="section-title" style="color:#04342C">Phase 전환</div>
+    <p style="font-size:13px;color:#0F6E56;margin-bottom:1.5rem">스크롤하면 각 Phase의 상세 내용이 순서대로 열립니다</p>
+  </div>
+
+  <div class="phase-grid" id="phase-grid">
+    <div class="phase-col p1" id="p1col">
+      <div class="phase-label" style="color:#1D9E75">Phase 1 · Month 1–12</div>
+      <div class="phase-num" style="color:#04342C">스케일업</div>
+      <div class="phase-body" style="color:#0F6E56">총매출(Gross Revenue)의 <strong>1%</strong></div>
+
+      <div class="phase-detail-block" id="p1detail">
+        <div style="height:0.5px;background:#9FE1CB;margin:1rem 0"></div>
+        <div style="font-size:13px;color:#0F6E56;line-height:1.8;margin-bottom:0.75rem">
+          공격적 유저 모객·파이 키우기<br>
+          BI 상의 총매출 기준으로 계산
+        </div>
+        <div class="phase-card" style="background:rgba(4,52,44,0.07);color:#085041">
+          이 기간에는 ROAS, 영업이익, 마케팅비용 등 일체의 비용 지표를 인센티브 계산에서 제외합니다.
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem">
+          <span class="pill" style="color:#1D9E75;border-color:#9FE1CB;font-size:11px">ROAS 무관</span>
+          <span class="pill" style="color:#1D9E75;border-color:#9FE1CB;font-size:11px">이익률 무관</span>
+          <span class="pill" style="color:#1D9E75;border-color:#9FE1CB;font-size:11px">총매출 기준</span>
+        </div>
       </div>
     </div>
-    <div class="cell" style="background:#085041;padding:2rem">
-      <div class="eyebrow" style="color:#5DCAA5;border-color:#0F6E56">Phase 2 · Month 13+</div>
-      <div style="font-size:22px;font-weight:700;color:#E1F5EE;margin-bottom:8px">라이브 서비스</div>
-      <div class="body" style="color:#9FE1CB;margin-bottom:1rem">영업이익(Operating Profit)의 10%가 인센티브 예산</div>
-      <div style="font-size:13px;color:#9FE1CB;line-height:1.8">
-        수익성 중심 성과 배분으로 전환<br>
-        매년 정기 인센티브 지급 시즌에 지급
+
+    <div class="phase-col p2" id="p2col">
+      <div class="phase-label" style="color:#5DCAA5">Phase 2 · Month 13+</div>
+      <div class="phase-num" style="color:#E1F5EE">라이브 서비스</div>
+      <div class="phase-body" style="color:#9FE1CB">영업이익(Operating Profit)의 <strong style="color:#E1F5EE">10%</strong></div>
+
+      <div class="phase-detail-block" id="p2detail">
+        <div style="height:0.5px;background:#0F6E56;margin:1rem 0"></div>
+        <div style="font-size:13px;color:#9FE1CB;line-height:1.8;margin-bottom:0.75rem">
+          수익성 중심 성과 배분으로 전환<br>
+          매년 정기 인센티브 지급 시즌에 지급
+        </div>
+        <div class="phase-card" style="background:rgba(255,255,255,0.07);color:#9FE1CB">
+          폭발적 성장이 안정화된 후 지속 가능한 수익 창출 구조로 전환됩니다. 마케팅 효율화, 비용 관리가 핵심 지표로 활성화됩니다.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem">
+          <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:0.75rem">
+            <div style="font-size:11px;color:#5DCAA5;font-weight:600;margin-bottom:3px">인센티브 기준</div>
+            <div style="font-size:14px;font-weight:700;color:#E1F5EE">영업이익 × 10%</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.08);border-radius:8px;padding:0.75rem">
+            <div style="font-size:11px;color:#5DCAA5;font-weight:600;margin-bottom:3px">지급 시점</div>
+            <div style="font-size:14px;font-weight:700;color:#E1F5EE">연간 정기 시즌</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height:2rem;background:#E1F5EE"></div>
+</div>
+
+<div class="sec reveal" style="background:#FAEEDA;color:#412402">
+  <div class="eyebrow" style="color:#BA7517">Payout Waterfall</div>
+  <div class="section-title" style="color:#412402">지급 매트릭스</div>
+  <p style="font-size:13px;color:#854F0B;margin-bottom:1.5rem">총액 2,000만 원 초과 시 최대 3년 분할 지급 — 행을 클릭하면 상세 설명</p>
+  <div>
+    <div style="display:grid;grid-template-columns:80px 1fr 1fr 1fr;padding:0 0 8px;border-bottom:0.5px solid #EF9F27;margin-bottom:4px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#BA7517">시나리오</div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#BA7517;text-align:right">Year 1</div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#BA7517;text-align:right">Year 2</div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:#BA7517;text-align:right">Year 3</div>
+    </div>
+    <div class="payout-row" style="border-color:#FAC775" onclick="togglePayout(this,'즉시 전액 지급. 2,000만 원 이하이므로 분할 없이 Year 1에 모두 지급됩니다.')">
+      <div><span style="font-weight:800;color:#412402;font-size:15px">A</span><br><span style="font-size:11px;color:#854F0B">1,800만</span></div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">1,800만</div>
+      <div style="text-align:right;color:#BA7517;font-size:13px">—</div>
+      <div style="text-align:right;color:#BA7517;font-size:13px">—</div>
+      <div class="scenario-detail" style="color:#854F0B"></div>
+    </div>
+    <div class="payout-row" style="border-color:#FAC775" onclick="togglePayout(this,'2,000만 초과분 800만은 1년 뒤에 지급. 총 2,800만 원을 2년에 나눠 받습니다.')">
+      <div><span style="font-weight:800;color:#412402;font-size:15px">B</span><br><span style="font-size:11px;color:#854F0B">2,800만</span></div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">2,000만</div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">800만</div>
+      <div style="text-align:right;color:#BA7517;font-size:13px">—</div>
+      <div class="scenario-detail" style="color:#854F0B"></div>
+    </div>
+    <div class="payout-row" style="border-color:#FAC775" onclick="togglePayout(this,'5,000만 원을 3년에 걸쳐 지급. 잔여분은 매년 분할되어 장기 근속을 유도합니다.')">
+      <div><span style="font-weight:800;color:#412402;font-size:15px">C</span><br><span style="font-size:11px;color:#854F0B">5,000만</span></div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">2,000만</div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">2,000만</div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">1,000만</div>
+      <div class="scenario-detail" style="color:#854F0B"></div>
+    </div>
+    <div class="payout-row" style="border-color:transparent" onclick="togglePayout(this,'6,000만 초과 시 3년 균등 분할. 1억 원이면 매년 3,333만 원씩 3년간 수령합니다.')">
+      <div><span style="font-weight:800;color:#412402;font-size:15px">D</span><br><span style="font-size:11px;color:#854F0B">1억 (6천↑)</span></div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">3,333만</div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">3,333만</div>
+      <div style="text-align:right;font-weight:700;color:#412402;font-size:14px">3,333만</div>
+      <div class="scenario-detail" style="color:#854F0B"></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec reveal" style="background:#FAECE7;color:#4A1B0C">
+  <div class="eyebrow" style="color:#D85A30">인터랙티브 시뮬레이터</div>
+  <div class="section-title" style="color:#4A1B0C">내 팀 인센티브 계산하기</div>
+  <div style="margin-top:1.5rem;padding:1.5rem;background:rgba(255,255,255,0.5);border-radius:12px;border:0.5px solid #F0997B">
+    <div class="sim-slider-wrap">
+      <label><span>월 평균 매출</span><span id="rev-out" style="font-weight:700;color:#D85A30">15억 원</span></label>
+      <input type="range" class="sim" min="10" max="100" value="15" step="1" id="rev-slider">
+    </div>
+    <div class="sim-slider-wrap">
+      <label><span>팀 인원 수</span><span id="mm-out" style="font-weight:700;color:#D85A30">18명</span></label>
+      <input type="range" class="sim" min="4" max="40" value="18" step="1" id="mm-slider">
+    </div>
+    <div class="sim-result">
+      <div class="sim-cell">
+        <div style="font-size:11px;color:#993C1D;margin-bottom:6px;font-weight:500">누적 총매출</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-0.02em;color:#4A1B0C" id="total-rev">180억</div>
+      </div>
+      <div class="sim-cell">
+        <div style="font-size:11px;color:#993C1D;margin-bottom:6px;font-weight:500">인센티브 풀 (1%)</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-0.02em;color:#4A1B0C" id="pool">1억 8천만</div>
+      </div>
+      <div class="sim-cell">
+        <div style="font-size:11px;color:#993C1D;margin-bottom:6px;font-weight:500">1인당 평균</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-0.02em;color:#4A1B0C" id="per-person">1,000만</div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="sec" style="background:#FAEEDA; color:#412402">
-  <div class="eyebrow" style="color:#BA7517;border-color:#EF9F27">Payout Waterfall</div>
-  <div class="section-title" style="color:#412402">1% 인센티브 지급 매트릭스</div>
-  <p class="body" style="color:#854F0B;margin-top:0.5rem;margin-bottom:2rem">1% 인센 총액 2,000만 원 초과 시 최대 3년 분할 지급</p>
-  <div style="display:flex;flex-direction:column;gap:0">
-    <div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;gap:0;border-bottom:0.5px solid #EF9F27;padding-bottom:8px;margin-bottom:4px">
-      <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#BA7517">시나리오</div>
-      <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#BA7517;text-align:right">Year 1</div>
-      <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#BA7517;text-align:right">Year 2</div>
-      <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#BA7517;text-align:right">Year 3</div>
+<div class="sec reveal" style="background:#0e0e0e;color:#f0ede6">
+  <div class="eyebrow" style="color:#555">Executive Summary</div>
+  <div class="section-title" style="color:#f0ede6">5대 원칙</div>
+  <div style="margin-top:1.5rem">
+    <div class="step-row" style="border-color:#1a1a1a" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#444">01</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#f0ede6">발동 Trigger</div>
+        <div class="step-detail" style="color:#555">월 매출 10억 원 돌파 시 즉시 엔진 가동. 발동 조건 달성 후 12개월간 총매출의 1%가 인센티브 재원으로 적립됩니다.</div></div>
+      <div style="font-size:18px;color:#333;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
-    <div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;padding:12px 0;border-bottom:0.5px solid #FAC775">
-      <div><span style="font-weight:700;color:#412402">A</span><br><span style="font-size:11px;color:#854F0B">1,800만</span></div>
-      <div style="text-align:right;font-weight:600;color:#412402">1,800만 원</div>
-      <div style="text-align:right;color:#BA7517">—</div>
-      <div style="text-align:right;color:#BA7517">—</div>
+    <div class="step-row" style="border-color:#1a1a1a" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#444">02</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#f0ede6">Scale-up Pool</div>
+        <div class="step-detail" style="color:#555">발동한 달 포함 정확히 12개월, 총매출의 1% 누적. ROAS 및 이익률과 완전히 무관하게 산정됩니다.</div></div>
+      <div style="font-size:18px;color:#333;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
-    <div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;padding:12px 0;border-bottom:0.5px solid #FAC775">
-      <div><span style="font-weight:700;color:#412402">B</span><br><span style="font-size:11px;color:#854F0B">2,800만</span></div>
-      <div style="text-align:right;font-weight:600;color:#412402">2,000만 원</div>
-      <div style="text-align:right;font-weight:600;color:#412402">800만 원</div>
-      <div style="text-align:right;color:#BA7517">—</div>
+    <div class="step-row" style="border-color:#1a1a1a" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#444">03</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#f0ede6">지급 상한 분배</div>
+        <div class="step-detail" style="color:#555">총 인센티브 2,000만 원 초과 시 분할, 6,000만 원 초과 시 3년에 걸쳐 1/3씩 균등 지급합니다.</div></div>
+      <div style="font-size:18px;color:#333;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
-    <div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;padding:12px 0;border-bottom:0.5px solid #FAC775">
-      <div><span style="font-weight:700;color:#412402">C</span><br><span style="font-size:11px;color:#854F0B">5,000만</span></div>
-      <div style="text-align:right;font-weight:600;color:#412402">2,000만 원</div>
-      <div style="text-align:right;font-weight:600;color:#412402">2,000만 원</div>
-      <div style="text-align:right;font-weight:600;color:#412402">1,000만 원</div>
+    <div class="step-row" style="border-color:#1a1a1a" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#444">04</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#f0ede6">Live Phase 전환</div>
+        <div class="step-detail" style="color:#555">런칭 13개월 차부터 영업이익 10% 배분 구조로 자동 전환. 매년 정기 인센티브 시즌에 지급됩니다.</div></div>
+      <div style="font-size:18px;color:#333;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
-    <div style="display:grid;grid-template-columns:90px 1fr 1fr 1fr;padding:12px 0">
-      <div><span style="font-weight:700;color:#412402">D</span><br><span style="font-size:11px;color:#854F0B">1억 (6천↑)</span></div>
-      <div style="text-align:right;font-weight:600;color:#412402">3,333만 원</div>
-      <div style="text-align:right;font-weight:600;color:#412402">3,333만 원</div>
-      <div style="text-align:right;font-weight:600;color:#412402">3,333만 원</div>
-    </div>
-  </div>
-</div>
-
-<div class="sec" style="background:#FAECE7; color:#4A1B0C">
-  <div class="eyebrow" style="color:#D85A30;border-color:#F0997B">시뮬레이션</div>
-  <div class="section-title" style="color:#4A1B0C">발동 성공 시 예시</div>
-  <p class="body" style="color:#993C1D;margin-top:0.5rem;margin-bottom:2rem">월 매출 15억 원 · 12개월 유지 → 누적 180억 원 달성 가정</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:#F0997B;border-radius:8px;overflow:hidden">
-    <div style="background:#FAECE7;padding:1.5rem 1rem;text-align:center">
-      <div class="num-lg" style="color:#4A1B0C;font-size:36px">180억</div>
-      <div style="font-size:12px;color:#993C1D;margin-top:6px">누적 총매출</div>
-    </div>
-    <div style="background:#FAECE7;padding:1.5rem 1rem;text-align:center">
-      <div class="num-lg" style="color:#4A1B0C;font-size:36px">1억 8천</div>
-      <div style="font-size:12px;color:#993C1D;margin-top:6px">총 인센티브 풀</div>
-    </div>
-    <div style="background:#FAECE7;padding:1.5rem 1rem;text-align:center">
-      <div class="num-lg" style="color:#4A1B0C;font-size:36px">평균 1천만</div>
-      <div style="font-size:12px;color:#993C1D;margin-top:6px">1인당 평균 (18MM)</div>
+    <div class="step-row" style="border-color:transparent" onclick="toggleStep(this)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.1em;min-width:28px;padding-top:3px;color:#444">05</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#f0ede6">예외 상황</div>
+        <div class="step-detail" style="color:#555">1% 인센 발동이 안 됐을 경우, 합의 하에 라이브 시점 및 지급 조건을 별도 결정합니다.</div></div>
+      <div style="font-size:18px;color:#333;transition:transform 0.3s;flex-shrink:0" class="arr">+</div>
     </div>
   </div>
 </div>
 
-<div class="sec" style="background:#0e0e0e; color:#f0ede6">
-  <div class="eyebrow" style="color:#888">Executive Summary</div>
-  <div class="section-title" style="color:#f0ede6">5대 원칙 요약</div>
-  <div style="margin-top:2rem;display:flex;flex-direction:column">
-    <div class="step-row" style="border-color:#222">
-      <div class="step-n" style="color:#555;font-size:13px;font-weight:700">01</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:600;color:#f0ede6;margin-bottom:3px">발동 Trigger</div>
-        <div style="font-size:13px;color:#666">월 매출 10억 원 돌파 시 </div>
-      </div>
-    </div>
-    <div class="step-row" style="border-color:#222">
-      <div class="step-n" style="color:#555;font-size:13px;font-weight:700">02</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:600;color:#f0ede6;margin-bottom:3px">Scale-up Pool</div>
-        <div style="font-size:13px;color:#666">발동한 달 포함 정확히 12개월, 총매출의 1% 누적 (ROAS 무관)</div>
-      </div>
-    </div>
-    <div class="step-row" style="border-color:#222">
-      <div class="step-n" style="color:#555;font-size:13px;font-weight:700">03</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:600;color:#f0ede6;margin-bottom:3px">지급 상한 분배</div>
-        <div style="font-size:13px;color:#666">총 인센티브 2,000만 원 초과 시 분할 / 6천만 원 초과 시 1/3씩 균등</div>
-      </div>
-    </div>
-    <div class="step-row" style="border-color:#222">
-      <div class="step-n" style="color:#555;font-size:13px;font-weight:700">04</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:600;color:#f0ede6;margin-bottom:3px">Live Phase 전환</div>
-        <div style="font-size:13px;color:#666">런칭 13개월 차부터 영업이익 10% 배분 구조 자동 전환</div>
-      </div>
-    </div>
-    <div class="step-row" style="border-color:transparent">
-      <div class="step-n" style="color:#555;font-size:13px;font-weight:700">05</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:600;color:#f0ede6;margin-bottom:3px">예외 상황</div>
-        <div style="font-size:13px;color:#666">1% 인센 발동이 안 됐을 경우, 합의 하에 라이브 시점 결정</div>
-      </div>
-    </div>
-  </div>
-</div>
+<script>
+function toggleStep(row){
+  var d=row.querySelector('.step-detail');
+  var a=row.querySelector('.arr');
+  var open=d.classList.toggle('open');
+  a.style.transform=open?'rotate(45deg)':'rotate(0)';
+}
+function togglePayout(row,msg){
+  var d=row.querySelector('.scenario-detail');
+  var wasOpen=d.classList.contains('open');
+  document.querySelectorAll('.payout-row').forEach(function(r){
+    r.querySelector('.scenario-detail').classList.remove('open');
+    r.classList.remove('active');
+  });
+  if(!wasOpen){d.textContent=msg;d.classList.add('open');row.classList.add('active');}
+}
+function fmtWan(w){
+  if(w>=10000)return Math.round(w/1000)/10+'억';
+  if(w>=1000)return (w/1000).toFixed(1).replace('.0','')+'천만';
+  return Math.round(w).toLocaleString()+'만';
+}
+function calcSim(){
+  var rev=parseInt(document.getElementById('rev-slider').value);
+  var mm=parseInt(document.getElementById('mm-slider').value);
+  document.getElementById('rev-out').textContent=rev+'억 원';
+  document.getElementById('mm-out').textContent=mm+'명';
+  var totalEok=rev*12;
+  var poolWan=totalEok*100;
+  var perWan=Math.round(poolWan/mm);
+  document.getElementById('total-rev').textContent=totalEok+'억';
+  document.getElementById('pool').textContent=fmtWan(poolWan);
+  document.getElementById('per-person').textContent=fmtWan(perWan);
+}
+document.getElementById('rev-slider').addEventListener('input',calcSim);
+document.getElementById('mm-slider').addEventListener('input',calcSim);
+calcSim();
+
+var p1opened=false;
+var p2opened=false;
+
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    var bars=e.target.querySelectorAll('[data-bar]');
+    bars.forEach(function(b){setTimeout(function(){b.classList.add('go');},100);});
+    var steps=e.target.querySelectorAll('.step-detail');
+    if(steps.length>0){
+      var delay=300;
+      steps.forEach(function(d){
+        var row=d.closest('.step-row');
+        var arr=row?row.querySelector('.arr'):null;
+        setTimeout(function(){
+          d.classList.add('open');
+          if(arr)arr.style.transform='rotate(45deg)';
+        },delay);
+        delay+=150;
+      });
+    }
+  });
+},{threshold:0.25});
+
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+var phaseIo=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    var ratio=e.intersectionRatio;
+    if(!p1opened && ratio>=0.2){
+      p1opened=true;
+      setTimeout(function(){
+        document.getElementById('p1detail').classList.add('open');
+      },200);
+    }
+    if(!p2opened && ratio>=0.55){
+      p2opened=true;
+      setTimeout(function(){
+        document.getElementById('p2detail').classList.add('open');
+      },200);
+    }
+  });
+},{threshold:[0.2,0.35,0.55,0.7],rootMargin:'0px'});
+
+phaseIo.observe(document.getElementById('phase-grid'));
+</script>
